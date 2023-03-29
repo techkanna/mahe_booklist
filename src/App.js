@@ -1,70 +1,48 @@
 import { useState, useRef } from "react";
+
 function App() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [isbn, setIsbn] = useState("");
 
+  const [titleIsTouched, setTitleIsTouched] = useState(false);
+  const [authorIsTouched, setAuthorIsTouched] = useState(false);
+  const [isbnIsTouched, setIsbnIsTouched] = useState(false);
+  const [message, setMessage] = useState('');
+  const [bookList, setBookList] = useState([])
+  const inputFocus = useRef();
+
   const handleTitle = (e) => {
+    setTitleIsTouched(true)
     setTitle(() => e.target.value);
   };
 
   const handleAuthor = (e) => {
+    setAuthorIsTouched(true)
     setAuthor(e.target.value);
   };
 
   const handleIsbn = (e) => {
+    setIsbnIsTouched(true)
     setIsbn(e.target.value);
   };
-  // // create tr element
-  const tblBody = document.querySelector("tbody");
-  const tr = document.createElement("tr");
-
-  const inputFocus = useRef();
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title == "" || author == "" || isbn == "") {
-      const errorMsgs = document.querySelectorAll(".error");
+    
+    const newBook ={title, author, isbn}
 
-      errorMsgs.forEach((errorMsg) => {
-        errorMsg.classList.add("active");
+    bookList.push(newBook)
 
-        setTimeout(() => {
-          errorMsg.classList.remove("active");
-          inputFocus.current.focus();
-        }, 2000);
-      });
-    } else {
-      const bookAddMsg = document.querySelector(".book_details p");
+    setBookList(bookList)
 
-      bookAddMsg.classList.add("active");
-
-      setTimeout(() => {
-        bookAddMsg.classList.remove("active");
-      }, 1000);
-
-      const tdEl = document.createElement("td");
-
-      tdEl.innerHTML = title;
-      tr.appendChild(tdEl);
-      const tdEl2 = document.createElement("td");
-
-      tdEl2.innerHTML = author;
-      tr.appendChild(tdEl2);
-      const tdEl3 = document.createElement("td");
-      tdEl3.innerHTML = isbn;
-      tr.appendChild(tdEl3);
-
-      // colseBtn create
-      const closeBtn = document.createElement("i");
-      closeBtn.className = "fa fa-close";
-      tr.appendChild(closeBtn);
-      tblBody.append(tr);
-      // console.log(title, author, isbn);
-    }
     setTitle("");
     setAuthor("");
     setIsbn("");
+    setTitleIsTouched(false)
+    setAuthorIsTouched(false)
+    setIsbnIsTouched(false)
+    setMessage('Book Added')
   };
 
   return (
@@ -77,11 +55,14 @@ function App() {
             My<span>Book</span>List
           </h1>
         </header>
+        {message && 
         <div className="book_status">
-          <div className="book_details">
-            <p>Book Added</p>
+          <div className="book_details"> 
+            <p>{message}</p>
+            <button onClick={()=> setMessage('')}>X</button>
           </div>
         </div>
+        }
 
         {/* <!-- form page --> */}
         <form onSubmit={handleSubmit}>
@@ -93,10 +74,13 @@ function App() {
             onChange={handleTitle}
             id="titleInput"
           />
+
+          {(title === "" && titleIsTouched) ? (
           <div className="error">
             <span>Please Enter the Title Field</span>
             <i className="fa fa-exclamation-circle"></i>
           </div>
+          ): ''}
 
           <label>Author</label>
           <input
@@ -105,10 +89,12 @@ function App() {
             onChange={handleAuthor}
             id="authorInput"
           />
+          {(author === '' && authorIsTouched) && (
           <div className="error">
             <span>Please Enter the Author Field</span>
             <i className="fa fa-exclamation-circle"></i>
           </div>
+          )}
 
           <label>ISBN#</label>
           <input
@@ -117,13 +103,15 @@ function App() {
             onChange={handleIsbn}
             id="isbnInput"
           />
+          {(isbn === '' && isbnIsTouched) && (
           <div className="error p15">
             <span>Please Enter the ISBN# Field</span>
             <i className="fa fa-exclamation-circle"></i>
           </div>
+          )}
 
           {/* <!-- btn --> */}
-          <button id="btn">Submit</button>
+          <button className='btn' disabled={title === "" || author === "" || isbn === ""} id="btn">Submit</button>
         </form>
 
         {/* <!-- table --> */}
@@ -136,7 +124,18 @@ function App() {
               <th>Action</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {bookList.map(book=>{
+              return (
+                <tr>
+                  <td>{book.title}</td>
+                  <td>{book.author}</td>
+                  <td>{book.isbn}</td>
+                  <td><i className='fa fa-close'></i></td>
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
     </>

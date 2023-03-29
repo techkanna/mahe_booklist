@@ -29,13 +29,10 @@ header span {
   color: #fff;
   background-color: green;
   padding: 8px;
-  display: none;
   border-radius: 5px;
   transition: all 0.1s ease;
 }
-.book_details p.active {
-  display: block;
-}
+
 .book_details p.remove {
   background-color: red;
 }
@@ -44,14 +41,11 @@ header span {
   justify-content: space-between;
   padding: 5px 0px;
   color: red;
-  display: none;
 }
 .error.p15 {
   padding-bottom: 15px;
 }
-.error.active {
-  display: flex;
-}
+
 header img {
   height: 50px;
   width: 50px;
@@ -78,17 +72,25 @@ form input {
 form input.active {
   border: 1.5px solid red;
 }
-button {
+.btn {
   background-color: blue;
   color: #fff;
   padding: 10px;
-  cursor: pointer;
   font-size: 16px;
   outline: none;
   width: 100%;
   border: none;
   border-radius: 10px;
 }
+
+.btn:not(:disabled){
+  cursor: pointer;
+}
+
+.btn:disabled{
+  opacity: 0.5;
+}
+
 table {
   /* border: 1px solid #000; */
   border-collapse: collapse;
